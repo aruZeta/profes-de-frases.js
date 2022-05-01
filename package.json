@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "description": "* Profes de frases bot",
     "main": "index.js",
-    "scripts": {},
+    "scripts": {
+	"start": "node index.js"
+    },
     "keywords": [],
     "author": "",
     "license": "ISC",
