@@ -14,14 +14,10 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
-const scope = "bot%20applications.commands";
-const link = "https://discord.com/api/oauth2/authorize";
-
 client.once('ready', () => {
 	client.user.setActivity('con tu madre');
 	client.user.setUsername('Cristotractor');
 	console.log(`Logged in as ${client.user.tag}!`);
-	console.log(`Invite link: ${link}?client_id=${config.clientId}&permissions=${config.permissions}&scope=${scope}`);
 });
 
 client.on('interactionCreate', async interaction => {
