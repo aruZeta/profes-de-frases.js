@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -42,12 +41,8 @@ module.exports = {
 			letrasQueFaltan = 'No faltan letras';
 		}
 
-		const estadisticasEmbed = new MessageEmbed()
+		const msgEmbed = require('./common/embed.js').execute(config)
 			.setTitle('Estadisticas de frases')
-			.setColor('#3498db')
-			.setThumbnail(config.userPfp)
-			.setTimestamp()
-			.setFooter({ text: 'Cristotractor go brrrr', iconURL: config.userPfp })
 			.addFields(
 				{ name: 'Numero de frases:',
 					value: `${cantidad}`
@@ -63,7 +58,7 @@ module.exports = {
 			);
 
 		await interaction.reply({
-			embeds: [estadisticasEmbed]
+			embeds: [msgEmbed]
 		});
 	}
 }

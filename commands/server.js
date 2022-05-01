@@ -5,7 +5,20 @@ module.exports = {
 		.setName('server')
 		.setDescription('Muestra estadisticas del servidor.'),
 
-	async execute(interaction) {
-		await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
+	async execute(interaction, _, config) {
+		const msgEmbed = require('./common/embed.js').execute(config)
+			.setTitle('Estadisticas del servidor')
+			.addFields(
+				{ name: 'Nombre:',
+					value: `${interaction.guild.name}`
+				},
+				{ name: 'Numero de miembros:',
+					value: `${interaction.guild.memberCount}`
+				}
+			);
+
+		await interaction.reply({
+			embeds: [msgEmbed]
+		});
 	}
 }

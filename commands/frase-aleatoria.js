@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -29,12 +28,8 @@ module.exports = {
 			fraseRandom = frases[letraRandom];
 		}
 
-		const estadisticasEmbed = new MessageEmbed()
+		const msgEmbed = require('./common/embed.js').execute(config)
 			.setTitle('Frase aleatoria')
-			.setColor('#3498db')
-			.setThumbnail(config.userPfp)
-			.setTimestamp()
-			.setFooter({ text: 'Cristotractor go brrrr', iconURL: config.userPfp })
 			.addFields(
 				{ name: 'Con la letra:',
 					value: `${letraRandom}`
@@ -45,7 +40,7 @@ module.exports = {
 			);
 
 		await interaction.reply({
-			embeds: [estadisticasEmbed]
+			embeds: [msgEmbed]
 		});
 	}
 }

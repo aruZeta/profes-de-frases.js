@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -9,12 +8,8 @@ module.exports = {
 	async execute(interaction, _, config) {
 		const scope = "bot%20applications.commands";
 		const link = "https://discord.com/api/oauth2/authorize";
-		const msgEmbed = new MessageEmbed()
+		const msgEmbed = require('./common/embed.js').execute(config)
 			.setTitle('Link de invitacion')
-			.setColor('#3498db')
-			.setThumbnail(config.userPfp)
-			.setTimestamp()
-			.setFooter({ text: 'Cristotractor go brrrr', iconURL: config.userPfp })
 			.addFields(
 				{ name: 'Link:',
 					value: `${link}?client_id=${config.clientId}&permissions=${config.permissions}&scope=${scope}`
