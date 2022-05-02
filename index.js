@@ -18,7 +18,11 @@ for (const file of commandFiles) {
 client.once('ready', () => {
 	client.user.setActivity('con tu madre');
 	client.user.setUsername('Cristotractor');
+
 	console.log(`Logged in as ${client.user.tag}!`);
+	const scope = "bot%20applications.commands";
+	const link = "https://discord.com/api/oauth2/authorize";
+	console.log(`${link}?client_id=${config.clientId}&permissions=${config.permissions}&scope=${scope}`);
 });
 
 client.on('interactionCreate', async interaction => {
