@@ -5,7 +5,7 @@ module.exports.execute = async (client, config) => {
 
 	await canalFrases.messages.fetch().then(messages => {
 		messages.forEach(message => {
-			const [ _, letra, frase ] = message.content.match(/^.*([a-z]): ?\n> (.*)$/s);
+			const [ _, letra, frase ] = message.content.match(/^.*([a-z]):.*> (.*)$/s);
 			if (!frases[letra]) {
 				frases[letra] = [frase];
 			} else {
