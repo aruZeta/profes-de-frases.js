@@ -11,6 +11,6 @@ module.exports = {
 
 	async execute(interaction, _, config) {
 		const persona = interaction.options.getUser('persona') || config.insultarId;
-		interaction.reply(`Eres tonto ${persona}`);
+		await interaction.reply(`Eres tonto ${persona}`);
 	}
 }
