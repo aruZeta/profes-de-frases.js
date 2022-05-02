@@ -6,23 +6,9 @@ module.exports = {
 		.setDescription('Muestra estadisticas de las frases.'),
 
 	async execute(interaction, client, config) {
-		const canalFrases = client.channels.cache.get(config.canalFrasesId);
 		const letras = 'abcdefghijklmnopqrstuvwxyz';
-
-		const frases = {};
-		let cantidad = 0;
-		await canalFrases.messages.fetch().then(messages => {
-			cantidad = messages.size;
-			messages.forEach(message => {
-				const [ _, letra, frase ] = message.content.match(/^.*([a-z]): ?\n> (.*)$/s);
-				if (!frases[letra]) {
-					frases[letra] = [frase];
-				} else {
-					frases[letra].push(frase);
-				}
-			})
-		});
-
+		const { frases, cantidad } = await require('./common/cargar-frases')
+			.execute(client, config);
 		const iteradorFrases = Object.entries(frases).sort();
 
 		let estadisticas = "";

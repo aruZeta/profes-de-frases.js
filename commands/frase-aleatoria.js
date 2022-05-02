@@ -10,21 +10,9 @@ module.exports = {
 			.setRequired(false)),
 
 	async execute(interaction, client, config) {
-		const canalFrases = client.channels.cache.get(config.canalFrasesId);
 		const letras = 'abcdefghijklmnopqrstuvwxyz';
-
-		const frases = {};
-		await canalFrases.messages.fetch().then(messages => {
-			messages.forEach(message => {
-				const [ _, letra, frase ] = message.content.match(/^.*([a-z]): ?\n> (.*)$/s);
-				if (!frases[letra]) {
-					frases[letra] = [frase];
-				} else {
-					frases[letra].push(frase);
-				}
-			})
-		});
-
+		const { frases } = await require('./common/cargar-frases')
+			.execute(client, config);
 		let letra = interaction.options.getString('letra');
 		let fraseRandom = null;
 
