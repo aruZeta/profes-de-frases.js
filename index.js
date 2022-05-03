@@ -1,7 +1,28 @@
-const fs = require('node:fs');
-const { Client, Collection, Intents } = require('discord.js');
-const config = require('./config.json');
 require('dotenv').config();
+
+const fs = require('node:fs');
+const config = require('./config.json');
+const { Client, Collection, Intents } = require('discord.js');
+const { MongoClient, ServerApiVersion } = require('mongodb');
+
+const mongoUri = `mongodb+srv://${process.env.mongoUser}:${process.env.mongoPswd}@data.0t392.mongodb.net/data?retryWrites=true&w=majority`;
+const mongo = new MongoClient(mongoUri, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	serverApi: ServerApiVersion.v1
+});
+
+const data = {};
+
+const setupDB = async () => {
+	await mongo.connect();
+
+	const db = mongo.db("data");
+	data['frases'] = db.collection("frases");
+	data['insultos'] = db.collection("insultos");
+
+	console.log('DB connected');
+}
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 client.commands = new Collection();
@@ -23,6 +44,8 @@ client.once('ready', () => {
 	const scope = "bot%20applications.commands";
 	const link = "https://discord.com/api/oauth2/authorize";
 	console.log(`${link}?client_id=${config.clientId}&permissions=${config.permissions}&scope=${scope}`);
+
+	setupDB();
 });
 
 client.on('interactionCreate', async interaction => {
@@ -33,7 +56,7 @@ client.on('interactionCreate', async interaction => {
 	if (!command) return;
 
 	try {
-		await command.execute(interaction, client, config);
+		await command.execute(interaction, client, config, data);
 	} catch (error) {
 		console.error(error);
 		await interaction.reply({
