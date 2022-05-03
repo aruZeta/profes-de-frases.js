@@ -1,5 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
+const letras = 'abcdefghijklmnopqrstuvwxyz';
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('frase')
@@ -20,11 +22,19 @@ module.exports = {
 						.setDescription('La frase en si')
 						.setRequired(true)
 				)
+		)
+		.addSubcommand(subcommand =>
+			subcommand
+				.setName('aleatoria')
+				.setDescription('Muestra una frase aleatoria.')
+				.addStringOption(option => option
+					.setName('letra')
+					.setDescription('Letra de la frase')
+					.setRequired(false))
 		),
 
 	async execute(interaction, client, config, data) {
 		const subcommand = interaction.options.getSubcommand();
-		const letras = 'abcdefghijklmnopqrstuvwxyz';
 
 		if (subcommand === 'nueva') {
 			const letra = interaction.options.getString('letra');
@@ -72,6 +82,35 @@ Esta es la frase que escribiste:
 					ephemeral: true
 				});
 			}
+		} else if (subcommand === 'aleatoria') {
+			const letraRandom = () => {
+				return letras.charAt(Math.floor(Math.random() * letras.length))
+			};
+
+			let letra = interaction.options.getString('letra') || letraRandom();
+			let found = await data.frases.findOne({ letra: letra });
+			while (!found) {
+				letra = letraRandom();
+				found = await data.frases.findOne({ letra: letra });
+			}
+
+			const frases = found.frases;
+			const fraseRandom = frases[Math.floor(Math.random() * frases.length)];
+
+			const msgEmbed = require('./common/embed.js').execute(config)
+				.setTitle('Frase aleatoria')
+				.addFields(
+					{ name: 'Con la letra:',
+						value: letra
+					},
+					{ name: 'Frase:',
+						value: fraseRandom
+					}
+				);
+			
+			await interaction.reply({
+				embeds: [msgEmbed]
+			});
 		}
 	}
 }
