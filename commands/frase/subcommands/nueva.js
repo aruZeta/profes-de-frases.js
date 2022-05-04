@@ -1,8 +1,10 @@
+const { checkLetra, checkAdmin, checkDbOperation } = require('./common/checking');
+
 const subcommandName = 'nueva';
 
 module.exports = {
 	name: subcommandName,
-	
+
 	addSubcommand(slashCommand) {slashCommand
 		.addSubcommand(subcommand => subcommand
 			.setName(subcommandName)
@@ -23,30 +25,12 @@ module.exports = {
 	},
 
 	async execute(interaction, client, config, data) {
-		if (!interaction.member.roles.cache.has(config.adminRoleId)) {
-			await interaction.reply({
-				content: 'Solo un admin puede borrar frases.',
-				ephemeral: true
-			});
-			return;
-		}
+		if (await checkAdmin(interaction, config)) return;
 
-		const { letras } = require('./common/common');
-		
 		const letra = interaction.options.getString('letra').toLowerCase();
-		const frase = interaction.options.getString('frase');
+		if (await checkLetra(interaction, letra)) return;
 
-		if (letra.length != 1 || !letras.includes(letra)) {
-			await interaction.reply({
-				content: `
-\`${letra}\` no es una letra!
-Esta es la frase que escribiste:
-> ${frase}
-				`,
-				ephemeral: true
-			});
-			return;
-		}
+		const frase = interaction.options.getString('frase');
 
 		const found = await data.frases.findOne({ letra: letra });
 		let operation;
@@ -62,21 +46,21 @@ Esta es la frase que escribiste:
 			});
 		}
 
-		if (operation.acknowledged) {
-			await interaction.reply(`
-Guardado!
-Con la letra ${letra}:
-> ${frase}
-			`);
-		} else {
-			await interaction.reply({
-				content: `
-Hubo un error contactando con el servidor, contacte al admin.
-Esta es la frase que escribiste:
-> ${frase}
-				`,
-				ephemeral: true
-			});
-		}
+		if (await checkDbOperation(interaction, operation)) return;
+
+		const msgEmbed = require('../../common/embed').execute(config)
+			.setTitle('Frase añadida')
+			.addFields(
+				{ name: 'Con la letra:',
+					value: letra
+				},
+				{ name: 'Frase:',
+					value: frase
+				}
+			);
+
+		await interaction.reply({
+			embeds: [msgEmbed]
+		});
 	}
 }

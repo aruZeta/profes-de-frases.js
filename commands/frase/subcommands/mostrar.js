@@ -1,3 +1,5 @@
+const { checkLetra, checkFound } = require('./common/checking');
+
 const subcommandName = 'mostrar';
 
 module.exports = {
@@ -16,27 +18,11 @@ module.exports = {
 	},
 
 	async execute(interaction, client, config, data) {
-		const { letras } = require('./common/common');
-
 		const letra = interaction.options.getString('letra').toLowerCase();
-
-		if (letra.length != 1 || !letras.includes(letra)) {
-			await interaction.reply({
-				content: `\`${letra}\` no es una letra!`,
-				ephemeral: true
-			});
-			return;
-		}
+		if (await checkLetra(interaction, letra)) return;
 
 		const found = await data.frases.findOne({ letra: letra });
-
-		if (!found) {
-			await interaction.reply({
-				content: `\`${letra}\` no se encontro en la db!`,
-				ephemeral: true
-			});
-			return;
-		}
+		if (await checkFound(interaction, found, letra)) return;
 
 		let frases = "";
 		const cantidad = found.frases.length;

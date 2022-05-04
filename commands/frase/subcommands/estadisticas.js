@@ -1,3 +1,5 @@
+const { letras } = require('./common/index');
+
 const subcommandName = 'estadisticas';
 
 module.exports = {
@@ -11,8 +13,6 @@ module.exports = {
 	},
 
 	async execute(interaction, client, config, data) {
-		const { letras } = require('./common/common');
-		
 		let cantidad = 0;
 		let estadisticas = "";
 		let letrasQueFaltan = "";

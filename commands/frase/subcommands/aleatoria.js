@@ -1,8 +1,11 @@
+const { letras } = require('./common/index');
+const { checkLetra, checkFound } = require('./common/checking');
+
 const subcommandName = 'aleatoria';
 
 module.exports = {
 	name: subcommandName,
-	
+
 	addSubcommand(slashCommand) {slashCommand
 		.addSubcommand(subcommand => subcommand
 			.setName(subcommandName)
@@ -16,8 +19,6 @@ module.exports = {
 	},
 
 	async execute(interaction, client, config, data) {
-		const { letras } = require('./common/common');
-		
 		const letraRandom = () => {
 			return letras.charAt(Math.floor(Math.random() * letras.length))
 		};
@@ -36,23 +37,10 @@ module.exports = {
 			}
 		} else {
 			letra = letra.toLowerCase();
-			if (!letras.includes(letra)) {
-				await interaction.reply({
-					content: `\`${letra}\` no es una letra valida.`,
-					ephemeral: true
-				});
-				return;
-			} else {
-				found = await comprobar(letra);
+			if (await checkLetra(interaction, letra)) return;
 
-				if (!found) {
-					await interaction.reply({
-						content: `\`${letra}\` no se encontro en la db.`,
-						ephemeral: true
-					});
-					return;
-				}
-			}
+			found = await comprobar(letra);
+			if (await checkFound(interaction, found, letra)) return;
 		}
 
 		const frases = found.frases;
