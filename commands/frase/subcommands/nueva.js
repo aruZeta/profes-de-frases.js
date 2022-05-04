@@ -25,7 +25,7 @@ module.exports = {
 	async execute(interaction, client, config, data) {
 		const { letras } = require('../commnon/common');
 		
-		const letra = interaction.options.getString('letra');
+		const letra = interaction.options.getString('letra').toLowerCase();
 		const frase = interaction.options.getString('frase');
 
 		if (letra.length != 1 || !letras.includes(letra)) {

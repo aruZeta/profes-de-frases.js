@@ -35,6 +35,7 @@ module.exports = {
 				found = await comprobar(letra);
 			}
 		} else {
+			letra = letra.toLowerCase();
 			if (!letras.includes(letra)) {
 				await interaction.reply({
 					content: `\`${letra}\` no es una letra valida.`,
