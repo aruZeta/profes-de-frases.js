@@ -6,7 +6,7 @@ module.exports = {
 	addSubcommand(slashCommand) {slashCommand
 		.addSubcommand(subcommand => subcommand
 			.setName(subcommandName)
-			.setDescription('Muestra las estadisticas de frases.')
+			.setDescription('Muestra las frases de una letra')
 			.addStringOption(option => option
 				.setName('letra')
 				.setDescription('Letra de las frases')
@@ -46,12 +46,8 @@ module.exports = {
 		}
 
 		const msgEmbed = require('../../common/embed').execute(config)
-			.setTitle('Estadisticas de frases')
+			.setTitle(`Frases con \`${letra}\``)
 			.addFields(
-				{ name: 'Letra:',
-					value: `${letra}`,
-					inline: true
-				},
 				{ name: 'Numero de frases:',
 					value: `${cantidad}`,
 					inline: true
