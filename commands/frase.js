@@ -92,11 +92,36 @@ Esta es la frase que escribiste:
 				return letras.charAt(Math.floor(Math.random() * letras.length))
 			};
 
-			let letra = interaction.options.getString('letra') || letraRandom();
-			let found = await data.frases.findOne({ letra: letra });
-			while (!found) {
-				letra = letraRandom();
-				found = await data.frases.findOne({ letra: letra });
+			const comprobar = letra => {
+				return data.frases.findOne({ letra: letra });
+			};
+
+			let letra = interaction.options.getString('letra');
+			let found = false;
+
+			if (letra == null) {
+				while (!found) {
+					letra = letraRandom();
+					found = await comprobar(letra);
+				}
+			} else {
+				if (!letras.includes(letra)) {
+					await interaction.reply({
+						content: `\`${letra}\` no es una letra valida.`,
+						ephemeral: true
+					});
+					return;
+				} else {
+					found = await comprobar(letra);
+
+					if (!found) {
+						await interaction.reply({
+							content: `\`${letra}\` no se encontro en la db.`,
+							ephemeral: true
+						});
+						return;
+					}
+				}
 			}
 
 			const frases = found.frases;
