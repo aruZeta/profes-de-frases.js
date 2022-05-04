@@ -1,4 +1,4 @@
-const { checkLetra, checkFound } = require('./common/checking');
+const { checkLetra, checkFound, checkId, checkIdInFound } = require('./common/checking');
 
 const subcommandName = 'mostrar';
 
@@ -14,6 +14,11 @@ module.exports = {
 				.setDescription('Letra de las frases')
 				.setRequired(true)
 			)
+			.addIntegerOption(option => option
+				.setName('id')
+				.setDescription('Id de la frase (opcional)')
+				.setRequired(false)
+			)
 		)
 	},
 
@@ -21,30 +26,52 @@ module.exports = {
 		const letra = interaction.options.getString('letra').toLowerCase();
 		if (await checkLetra(interaction, letra)) return;
 
+		const id = interaction.options.getInteger('id');
+
 		const found = await data.frases.findOne({ letra: letra });
 		if (await checkFound(interaction, found, letra)) return;
 
-		let frases = "";
-		const cantidad = found.frases.length;
+		if (id == null) {
+			let frases = "";
+			const cantidad = found.frases.length;
 
-		for (let i = 0; i < cantidad; i++) {
-			frases += `${i}: ${found.frases[i]}\n`;
+			for (let i = 0; i < cantidad; i++) {
+				frases += `${i}: ${found.frases[i]}\n`;
+			}
+
+			const msgEmbed = require('../../common/embed').execute(config)
+				.setTitle(`Frases con \`${letra}\``)
+				.addFields(
+					{ name: 'Numero de frases:',
+						value: `${cantidad}`,
+						inline: true
+					},
+					{ name: 'Frases:',
+						value: `${frases}`,
+					}
+				);
+
+			await interaction.reply({
+				embeds: [msgEmbed]
+			});
+		} else {
+			if (await checkId(interaction, id)) return;
+			if (await checkIdInFound(interaction, id, found)) return;
+
+			const msgEmbed = require('../../common/embed').execute(config)
+				.setTitle('Mostrar frase')
+				.addFields(
+					{ name: 'Con la letra:',
+						value: letra
+					},
+					{ name: 'Frase:',
+						value: found.frases[id]
+					}
+				);
+
+			await interaction.reply({
+				embeds: [msgEmbed]
+			});
 		}
-
-		const msgEmbed = require('../../common/embed').execute(config)
-			.setTitle(`Frases con \`${letra}\``)
-			.addFields(
-				{ name: 'Numero de frases:',
-					value: `${cantidad}`,
-					inline: true
-				},
-				{ name: 'Frases:',
-					value: `${frases}`,
-				}
-			);
-
-		await interaction.reply({
-			embeds: [msgEmbed]
-		});
 	}
 }
