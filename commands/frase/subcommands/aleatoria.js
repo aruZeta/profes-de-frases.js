@@ -6,19 +6,11 @@ module.exports = {
 	addSubcommand(slashCommand) {slashCommand
 		.addSubcommand(subcommand => subcommand
 			.setName(subcommandName)
-			.setDescription('Añade una nueva frase a la DB')
-			.addStringOption(option =>
-				option
-					.setName('letra')
-					.setDescription('Letra de la frase')
-					.setRequired(true)
-			)
-			.addStringOption(option =>
-				option
-					.setName('frase')
-					.setDescription('La frase en si')
-					.setRequired(true)
-			)
+			.setDescription('Muestra una frase aleatoria.')
+			.addStringOption(option => option
+				.setName('letra')
+				.setDescription('Letra de la frase')
+				.setRequired(false))
 		)
 	},
 
