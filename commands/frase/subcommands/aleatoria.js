@@ -10,7 +10,8 @@ module.exports = {
 			.addStringOption(option => option
 				.setName('letra')
 				.setDescription('Letra de la frase')
-				.setRequired(false))
+				.setRequired(false)
+			)
 		)
 	},
 

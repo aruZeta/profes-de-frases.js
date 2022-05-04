@@ -28,21 +28,20 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 client.commands = new Collection();
 
 fs.readdirSync('./commands', { withFileTypes: true }).filter(
-	item => item.name != 'common'
+	item =>
+		item.name != 'common'
 		&& ((item.isFile && item.name.endsWith('.js'))
 			|| item.isDirectory)
-).forEach(
-	item => {
-		let command;
-		if (item.isDirectory()) {
-			command = require(`./commands/${item.name}/index.js`);
-		} else {
-			command = require(`./commands/${item.name}`);
-		}
-
-		client.commands.set(command.slashCommand.name, command);
+).forEach(item => {
+	let command;
+	if (item.isDirectory()) {
+		command = require(`./commands/${item.name}/index.js`);
+	} else {
+		command = require(`./commands/${item.name}`);
 	}
-);
+
+	client.commands.set(command.slashCommand.name, command);
+});
 
 client.once('ready', () => {
 	client.user.setActivity('con tu madre');
