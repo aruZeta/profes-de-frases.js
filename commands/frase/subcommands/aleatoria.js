@@ -16,7 +16,7 @@ module.exports = {
 	},
 
 	async execute(interaction, client, config, data) {
-		const { letras } = require('../commnon/common');
+		const { letras } = require('./common/common');
 		
 		const letraRandom = () => {
 			return letras.charAt(Math.floor(Math.random() * letras.length))

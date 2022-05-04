@@ -29,7 +29,7 @@ module.exports = {
 			return;
 		}
 
-		const { letras } = require('../commnon/common');
+		const { letras } = require('./common/common');
 
 		const letra = interaction.options.getString('letra').toLowerCase();
 		const id = interaction.options.getInteger('id');

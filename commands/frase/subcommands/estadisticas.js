@@ -11,7 +11,7 @@ module.exports = {
 	},
 
 	async execute(interaction, client, config, data) {
-		const { letras } = require('../commnon/common');
+		const { letras } = require('./common/common');
 		
 		let cantidad = 0;
 		let estadisticas = "";
