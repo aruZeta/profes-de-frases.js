@@ -23,6 +23,14 @@ module.exports = {
 	},
 
 	async execute(interaction, client, config, data) {
+		if (!interaction.member.roles.cache.has(config.adminRoleId)) {
+			await interaction.reply({
+				content: 'Solo un admin puede borrar frases.',
+				ephemeral: true
+			});
+			return;
+		}
+
 		const { letras } = require('../commnon/common');
 		
 		const letra = interaction.options.getString('letra').toLowerCase();
