@@ -27,14 +27,22 @@ const setupDB = async () => {
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 client.commands = new Collection();
 
-const commandFiles =
-	fs.readdirSync('./commands')
-		.filter(file => file.endsWith('.js'));
+fs.readdirSync('./commands', { withFileTypes: true }).filter(
+	item => item.name != 'common'
+		&& ((item.isFile && item.name.endsWith('.js'))
+			|| item.isDirectory)
+).forEach(
+	item => {
+		let command;
+		if (item.isDirectory()) {
+			command = require(`./commands/${item.name}/index.js`);
+		} else {
+			command = require(`./commands/${item.name}`);
+		}
 
-for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-	client.commands.set(command.data.name, command);
-}
+		client.commands.set(command.slashCommand.name, command);
+	}
+);
 
 client.once('ready', () => {
 	client.user.setActivity('con tu madre');
@@ -60,7 +68,7 @@ client.on('interactionCreate', async interaction => {
 	} catch (error) {
 		console.error(error);
 		await interaction.reply({
-			content: 'There was an error while executing this command!',
+			content: 'Hubo un error ejecutando el comando.',
 			ephemeral: true
 		});
 	}

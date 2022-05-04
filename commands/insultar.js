@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
-	data: new SlashCommandBuilder()
+	slashCommand: new SlashCommandBuilder()
 		.setName('insultar')
 		.setDescription('Insulta a alguien (juan por defecto).')
 		.addUserOption(option => option
