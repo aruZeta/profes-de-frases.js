@@ -42,7 +42,7 @@ module.exports = {
 	},
 
 	async checkIdInFound(interaction, id, found) {
-		if (id > found.frases.length) {
+		if (id >= found.frases.length) {
 			await interaction.reply({
 				content: `No hay ninguna frase con el id \`${id}\`.`,
 				ephemeral: true
