@@ -31,6 +31,8 @@ module.exports = {
 	slashCommand: slashCommand,
 
 	async execute(interaction, client, config, data) {
-		subcommands[interaction.options.getSubcommand()](interaction, client, config, data);
+		await subcommands[interaction.options.getSubcommand()](
+			interaction, client, config, data
+		);
 	}
 }
