@@ -15,7 +15,7 @@ module.exports = {
 	addSubcommand(slashCommand) {slashCommand
 		.addSubcommand(subcommand => subcommand
 			.setName(subcommandName)
-			.setDescription('Borra una frase de la db (solo admins).')
+			.setDescription('Borra una frase de la DB (solo admins).')
 			.addStringOption(option => option
 				.setName('letra')
 				.setDescription('Letra de la frase')

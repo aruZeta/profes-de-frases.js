@@ -8,7 +8,7 @@ module.exports = {
 	addSubcommand(slashCommand) {slashCommand
 		.addSubcommand(subcommand => subcommand
 			.setName(subcommandName)
-			.setDescription('Añade una nueva frase a la DB')
+			.setDescription('Añade una nueva frase a la DB (solo admmins).')
 			.addStringOption(option =>
 				option
 					.setName('letra')

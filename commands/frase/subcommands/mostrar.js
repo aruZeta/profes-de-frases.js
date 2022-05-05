@@ -8,7 +8,7 @@ module.exports = {
 	addSubcommand(slashCommand) {slashCommand
 		.addSubcommand(subcommand => subcommand
 			.setName(subcommandName)
-			.setDescription('Muestra las frases de una letra')
+			.setDescription('Muestra las frases de una letra (o la del id dado).')
 			.addStringOption(option => option
 				.setName('letra')
 				.setDescription('Letra de las frases')

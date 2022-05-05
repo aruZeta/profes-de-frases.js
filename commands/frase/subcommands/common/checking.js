@@ -14,7 +14,7 @@ module.exports = {
 	async checkFound(interaction, found, letra) {
 		if (!found) {
 			await interaction.reply({
-				content: `\`${letra}\` no se encontro en la db.`,
+				content: `\`${letra}\` no se encontro en la DB.`,
 				ephemeral: true
 			});
 			throw 'Check failed';
@@ -24,7 +24,7 @@ module.exports = {
 	async checkAdmin(interaction, config) {
 		if (!interaction.member.roles.cache.has(config.adminRoleId)) {
 			await interaction.reply({
-				content: 'Solo un admin puede borrar frases.',
+				content: 'Solo un admin puede ejecutar este comando.',
 				ephemeral: true
 			});
 			throw 'Check failed';
@@ -54,7 +54,7 @@ module.exports = {
 	async checkDbOperation(interaction, operation) {
 		if (!operation.acknowledged) {
 			await interaction.reply({
-				content: 'Hubo un error con la db, contacte al admin.',
+				content: 'Hubo un error con la DB, contacte al admin.',
 				ephemeral: false
 			});
 			throw 'Check failed';
