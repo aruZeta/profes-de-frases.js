@@ -30,17 +30,17 @@ module.exports = {
 	},
 
 	async execute(interaction, client, config, data) {
-		if (await checkAdmin(interaction, config)) return;
+		await checkAdmin(interaction, config);
 
 		const letra = interaction.options.getString('letra').toLowerCase();
-		if (await checkLetra(interaction, letra)) return;
+		await checkLetra(interaction, letra);
 
 		const id = interaction.options.getInteger('id');
-		if (await checkId(interaction, id)) return;
+		await checkId(interaction, id);
 
 		const found = await data.frases.findOne({ letra: letra });
-		if (await checkFound(interaction, found, letra)) return;
-		if (await checkIdInFound(interaction, id, found)) return;
+		await checkFound(interaction, found, letra);
+		await checkIdInFound(interaction, id, found);
 
 		const frase = found.frases[id];
 
@@ -48,7 +48,7 @@ module.exports = {
 			{ letra: letra },
 			{ $pull: { frases: frase } }
 		);
-		if (await checkDbOperation(interaction, operation)) return;
+		await checkDbOperation(interaction, operation);
 
 		const msgEmbed = require('../../common/embed').execute(config)
 			.setTitle('Frase eliminada')

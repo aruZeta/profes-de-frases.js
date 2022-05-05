@@ -24,12 +24,12 @@ module.exports = {
 
 	async execute(interaction, client, config, data) {
 		const letra = interaction.options.getString('letra').toLowerCase();
-		if (await checkLetra(interaction, letra)) return;
+		await checkLetra(interaction, letra);
 
 		const id = interaction.options.getInteger('id');
 
 		const found = await data.frases.findOne({ letra: letra });
-		if (await checkFound(interaction, found, letra)) return;
+		await checkFound(interaction, found, letra);
 
 		if (id == null) {
 			let frases = "";
@@ -55,8 +55,8 @@ module.exports = {
 				embeds: [msgEmbed]
 			});
 		} else {
-			if (await checkId(interaction, id)) return;
-			if (await checkIdInFound(interaction, id, found)) return;
+			await checkId(interaction, id);
+			await checkIdInFound(interaction, id, found);
 
 			const msgEmbed = require('../../common/embed').execute(config)
 				.setTitle('Mostrar frase')

@@ -7,7 +7,7 @@ module.exports = {
 				content: `\`${letra}\` no es una letra!`,
 				ephemeral: true
 			});
-			return true;
+			throw 'Check failed';
 		}
 	},
 
@@ -17,7 +17,7 @@ module.exports = {
 				content: `\`${letra}\` no se encontro en la db.`,
 				ephemeral: true
 			});
-			return true;
+			throw 'Check failed';
 		}
 	},
 
@@ -27,7 +27,7 @@ module.exports = {
 				content: 'Solo un admin puede borrar frases.',
 				ephemeral: true
 			});
-			return true;
+			throw 'Check failed';
 		}
 	},
 
@@ -37,7 +37,7 @@ module.exports = {
 				content: `El id no puede ser un numero negativo, \`${id}\`.`,
 				ephemeral: true
 			});
-			return true;
+			throw 'Check failed';
 		}
 	},
 
@@ -47,7 +47,7 @@ module.exports = {
 				content: `No hay ninguna frase con el id \`${id}\`.`,
 				ephemeral: true
 			});
-			return true;
+			throw 'Check failed';
 		}
 	},
 
@@ -57,7 +57,7 @@ module.exports = {
 				content: 'Hubo un error con la db, contacte al admin.',
 				ephemeral: false
 			});
-			return;
+			throw 'Check failed';
 		}
 	}
 }

@@ -37,10 +37,10 @@ module.exports = {
 			}
 		} else {
 			letra = letra.toLowerCase();
-			if (await checkLetra(interaction, letra)) return;
+			await checkLetra(interaction, letra);
 
 			found = await comprobar(letra);
-			if (await checkFound(interaction, found, letra)) return;
+			await checkFound(interaction, found, letra);
 		}
 
 		const frases = found.frases;
