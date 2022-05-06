@@ -1,4 +1,5 @@
-const { letras } = require('./common/index');
+const { embed } = require('../../../common/embed');
+const { letters } = require('../../../config.json');
 
 const subcommandName = 'estadisticas';
 
@@ -12,42 +13,42 @@ module.exports = {
 		)
 	},
 
-	async execute(interaction, client, config, data) {
-		let cantidad = 0;
-		let estadisticas = "";
-		let letrasQueFaltan = "";
-		const letrasUsadas = [];
+	async execute({ interaction, phrasesColl }) {
+		let quantity = 0;
+		let statistics = "";
+		let missingLetters = "";
+		const storedLetters = [];
 
-		await data.frases.find({}, { sort: { letra: 1 } }).forEach(
-			({letra, frases}) => {
-				estadisticas += `\`${letra}: ${frases.length}\`\n`;
-				cantidad += frases.length;
-				letrasUsadas.push(letra);
+		await phrasesColl.find({}, { sort: { letter: 1 } }).forEach(
+			({letter, phrases}) => {
+				statistics += `\`${letter}: ${phrases.length}\`\n`;
+				quantity += phrases.length;
+				storedLetters.push(letter);
 			}
 		);
 
-		for (const letra of letras) {
-			if (letrasUsadas.indexOf(letra) < 0) {
-				letrasQueFaltan += `\`${letra}\`\n`;
+		for (const letter of letters) {
+			if (storedLetters.indexOf(letter) < 0) {
+				missingLetters += `\`${letter}\`\n`;
 			}
 		}
 
-		if (letrasQueFaltan.length == 0) {
-			letrasQueFaltan = 'No faltan letras';
+		if (missingLetters.length == 0) {
+			missingLetters = 'No faltan letras';
 		}
 
-		const msgEmbed = require('../../common/embed').execute(config)
+		const msgEmbed = embed()
 			.setTitle('Estadisticas de frases')
 			.addFields(
 				{ name: 'Numero de frases:',
-					value: `${cantidad}`
+					value: `${quantity}`
 				},
 				{ name: 'Numero de frases por letra:',
-					value: `${estadisticas}`,
+					value: `${statistics}`,
 					inline: true
 				},
 				{ name: 'Letras que faltan:',
-					value: `${letrasQueFaltan}`,
+					value: `${missingLetters}`,
 					inline: true
 				}
 			);

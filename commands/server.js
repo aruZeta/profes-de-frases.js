@@ -1,12 +1,14 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
+const { embed } = require('../common/embed');
+
 module.exports = {
 	slashCommand: new SlashCommandBuilder()
 		.setName('server')
 		.setDescription('Muestra estadisticas del servidor.'),
 
-	async execute(interaction, _, config) {
-		const msgEmbed = require('./common/embed.js').execute(config)
+	async execute({ interaction }) {
+		const msgEmbed = embed()
 			.setTitle('Estadisticas del servidor')
 			.addFields(
 				{ name: 'Nombre:',

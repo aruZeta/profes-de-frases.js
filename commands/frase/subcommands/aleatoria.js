@@ -1,5 +1,6 @@
-const { letras } = require('./common/index');
-const { checkLetra, checkFound } = require('./common/checking');
+const { checkLetter, checkFound } = require('../../../common/checking');
+const { embed } = require('../../../common/embed');
+const { letters } = require('../../../config.json');
 
 const subcommandName = 'aleatoria';
 
@@ -18,42 +19,42 @@ module.exports = {
 		)
 	},
 
-	async execute(interaction, client, config, data) {
+	async execute({ interaction, phrasesColl }) {
 		const letraRandom = () => {
-			return letras.charAt(Math.floor(Math.random() * letras.length))
+			return letters.charAt(Math.floor(Math.random() * letters.length))
 		};
 
-		const comprobar = letra => {
-			return data.frases.findOne({ letra: letra });
+		const find = letra => {
+			return phrasesColl.findOne({ letter: letra });
 		};
 
-		let letra = interaction.options.getString('letra');
+		let letter = interaction.options.getString('letra');
 		let found = false;
 
-		if (letra == null) {
+		if (letter == null) {
 			while (!found) {
-				letra = letraRandom();
-				found = await comprobar(letra);
+				letter = letraRandom();
+				found = await find(letter);
 			}
 		} else {
-			letra = letra.toLowerCase();
-			await checkLetra(interaction, letra);
+			letter = letter.toLowerCase();
+			await checkLetter(interaction, letter);
 
-			found = await comprobar(letra);
-			await checkFound(interaction, found, letra);
+			found = await find(letter);
+			await checkFound(interaction, found, letter);
 		}
 
-		const frases = found.frases;
-		const fraseRandom = frases[Math.floor(Math.random() * frases.length)];
+		const frases = found.phrases;
+		const randomPhrase = frases[Math.floor(Math.random() * frases.length)];
 
-		const msgEmbed = require('../../common/embed').execute(config)
+		const msgEmbed = embed()
 			.setTitle('Frase aleatoria')
 			.addFields(
 				{ name: 'Con la letra:',
-					value: letra
+					value: letter
 				},
 				{ name: 'Frase:',
-					value: fraseRandom
+					value: randomPhrase
 				}
 			);
 

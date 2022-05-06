@@ -1,11 +1,12 @@
 const {
 	checkAdmin
-	, checkId
-	, checkLetra
-	, checkFound
-	,	checkIdInFound
 	,	checkDbOperation
-} = require('./common/checking');
+	, checkFound
+	, checkId
+	,	checkIdInFound
+	, checkLetter
+} = require('../../../common/checking');
+const { embed } = require('../../../common/embed');
 
 const subcommandName = 'borrar';
 
@@ -29,35 +30,35 @@ module.exports = {
 		)
 	},
 
-	async execute(interaction, client, config, data) {
-		await checkAdmin(interaction, config);
+	async execute({ interaction, phrasesColl }) {
+		await checkAdmin(interaction);
 
-		const letra = interaction.options.getString('letra').toLowerCase();
-		await checkLetra(interaction, letra);
+		const letter = interaction.options.getString('letra').toLowerCase();
+		await checkLetter(interaction, letter);
 
 		const id = interaction.options.getInteger('id');
 		await checkId(interaction, id);
 
-		const found = await data.frases.findOne({ letra: letra });
-		await checkFound(interaction, found, letra);
+		const found = await phrasesColl.findOne({ letter: letter });
+		await checkFound(interaction, found, letter);
 		await checkIdInFound(interaction, id, found);
 
-		const frase = found.frases[id];
+		const phrase = found.phrases[id];
 
-		const operation = await data.frases.updateOne(
-			{ letra: letra },
-			{ $pull: { frases: frase } }
+		const operation = await phrasesColl.updateOne(
+			{ letter: letter },
+			{ $pull: { phrases: phrase } }
 		);
 		await checkDbOperation(interaction, operation);
 
-		const msgEmbed = require('../../common/embed').execute(config)
+		const msgEmbed = embed()
 			.setTitle('Frase eliminada')
 			.addFields(
 				{ name: 'Con la letra:',
-					value: letra
+					value: letter
 				},
 				{ name: 'Frase:',
-					value: frase
+					value: phrase
 				}
 			);
 

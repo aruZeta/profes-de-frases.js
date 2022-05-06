@@ -1,4 +1,10 @@
-const { checkLetra, checkFound, checkId, checkIdInFound } = require('./common/checking');
+const {
+	checkFound
+	, checkId
+	, checkIdInFound
+	, checkLetter
+} = require('../../../common/checking');
+const { embed } = require('../../../common/embed');
 
 const subcommandName = 'mostrar';
 
@@ -22,32 +28,32 @@ module.exports = {
 		)
 	},
 
-	async execute(interaction, client, config, data) {
-		const letra = interaction.options.getString('letra').toLowerCase();
-		await checkLetra(interaction, letra);
+	async execute({ interaction, phrasesColl }) {
+		const letter = interaction.options.getString('letra').toLowerCase();
+		await checkLetter(interaction, letter);
 
 		const id = interaction.options.getInteger('id');
 
-		const found = await data.frases.findOne({ letra: letra });
-		await checkFound(interaction, found, letra);
+		const found = await phrasesColl.findOne({ letter: letter });
+		await checkFound(interaction, found, letter);
 
 		if (id == null) {
-			let frases = "";
-			const cantidad = found.frases.length;
+			let phrases = "";
+			const quantity = found.phrases.length;
 
-			for (let i = 0; i < cantidad; i++) {
-				frases += `${i}: ${found.frases[i]}\n`;
+			for (let i = 0; i < quantity; i++) {
+				phrases += `${i}: ${found.phrases[i]}\n`;
 			}
 
-			const msgEmbed = require('../../common/embed').execute(config)
-				.setTitle(`Frases con \`${letra}\``)
+			const msgEmbed = embed()
+				.setTitle(`Frases con \`${letter}\``)
 				.addFields(
 					{ name: 'Numero de frases:',
-						value: `${cantidad}`,
+						value: `${quantity}`,
 						inline: true
 					},
 					{ name: 'Frases:',
-						value: `${frases}`,
+						value: phrases,
 					}
 				);
 
@@ -58,14 +64,14 @@ module.exports = {
 			await checkId(interaction, id);
 			await checkIdInFound(interaction, id, found);
 
-			const msgEmbed = require('../../common/embed').execute(config)
+			const msgEmbed = embed()
 				.setTitle('Mostrar frase')
 				.addFields(
 					{ name: 'Con la letra:',
-						value: letra
+						value: letter
 					},
 					{ name: 'Frase:',
-						value: found.frases[id]
+						value: found.phrases[id]
 					}
 				);
 

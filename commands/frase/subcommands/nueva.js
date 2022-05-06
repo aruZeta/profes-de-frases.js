@@ -1,4 +1,9 @@
-const { checkLetra, checkAdmin, checkDbOperation } = require('./common/checking');
+const {
+	checkLetter
+	, checkAdmin
+	, checkDbOperation
+} = require('../../../common/checking');
+const { embed } = require('../../../common/embed');
 
 const subcommandName = 'nueva';
 
@@ -24,38 +29,38 @@ module.exports = {
 		)
 	},
 
-	async execute(interaction, client, config, data) {
-		await checkAdmin(interaction, config);
+	async execute({ interaction, phrasesColl }) {
+		await checkAdmin(interaction);
 
-		const letra = interaction.options.getString('letra').toLowerCase();
-		await checkLetra(interaction, letra);
+		const letter = interaction.options.getString('letra').toLowerCase();
+		await checkLetter(interaction, letter);
 
-		const frase = interaction.options.getString('frase');
+		const phrase = interaction.options.getString('frase');
 
-		const found = await data.frases.findOne({ letra: letra });
+		const found = await phrasesColl.findOne({ letter: letter });
 		let operation;
 		if (found) {
-			operation = await data.frases.updateOne(
-				{ letra: letra },
-				{ $push: { frases: frase } }
+			operation = await phrasesColl.updateOne(
+				{ letter: letter },
+				{ $push: { phrases: phrase } }
 			);
 		} else {
-			operation = await data.frases.insertOne({
-				letra: letra,
-				frases: [frase]
+			operation = await phrasesColl.insertOne({
+				letter: letter,
+				phrases: [phrase]
 			});
 		}
 
 		await checkDbOperation(interaction, operation);
 
-		const msgEmbed = require('../../common/embed').execute(config)
+		const msgEmbed = embed()
 			.setTitle('Frase añadida')
 			.addFields(
 				{ name: 'Con la letra:',
-					value: letra
+					value: letter
 				},
 				{ name: 'Frase:',
-					value: frase
+					value: phrase
 				}
 			);
 

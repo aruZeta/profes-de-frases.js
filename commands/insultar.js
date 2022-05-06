@@ -1,5 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
+const { insultarId } = require('../config.json');
+
 module.exports = {
 	slashCommand: new SlashCommandBuilder()
 		.setName('insultar')
@@ -9,8 +11,8 @@ module.exports = {
 			.setDescription('La persona/objeto que quieres insultar')
 			.setRequired(false)),
 
-	async execute(interaction, _, config) {
-		const persona = interaction.options.getUser('persona') || config.insultarId;
+	async execute({ interaction }) {
+		const persona = interaction.options.getUser('persona') || insultarId;
 		await interaction.reply(`Eres tonto ${persona}`);
 	}
 }

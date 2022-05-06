@@ -1,28 +1,28 @@
-const { letras } = require('./index');
+const { letters, adminRoleId } = require('../config.json');
 
 module.exports = {
-	async checkLetra(interaction, letra) {
-		if (letra.length != 1 || !letras.includes(letra)) {
+	async checkLetter(interaction, letter) {
+		if (letter.length != 1 || !letters.includes(letter)) {
 			await interaction.reply({
-				content: `\`${letra}\` no es una letra!`,
+				content: `\`${letter}\` no es una letra!`,
 				ephemeral: true
 			});
 			throw 'Check failed';
 		}
 	},
 
-	async checkFound(interaction, found, letra) {
+	async checkFound(interaction, found, letter) {
 		if (!found) {
 			await interaction.reply({
-				content: `\`${letra}\` no se encontro en la DB.`,
+				content: `\`${letter}\` no se encontro en la DB.`,
 				ephemeral: true
 			});
 			throw 'Check failed';
 		}
 	},
 
-	async checkAdmin(interaction, config) {
-		if (!interaction.member.roles.cache.has(config.adminRoleId)) {
+	async checkAdmin(interaction) {
+		if (!interaction.member.roles.cache.has(adminRoleId)) {
 			await interaction.reply({
 				content: 'Solo un admin puede ejecutar este comando.',
 				ephemeral: true
@@ -42,7 +42,7 @@ module.exports = {
 	},
 
 	async checkIdInFound(interaction, id, found) {
-		if (id >= found.frases.length) {
+		if (id >= found.phrases.length) {
 			await interaction.reply({
 				content: `No hay ninguna frase con el id \`${id}\`.`,
 				ephemeral: true
