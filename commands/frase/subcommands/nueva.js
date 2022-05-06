@@ -4,6 +4,7 @@ const {
 	, checkDbOperation
 } = require('../../../common/checking');
 const { embed } = require('../../../common/embed');
+const { capitalize } = require('../../../common/string.js');
 
 const subcommandName = 'nueva';
 
@@ -35,7 +36,7 @@ module.exports = {
 		const letter = interaction.options.getString('letra').toLowerCase();
 		await checkLetter(interaction, letter);
 
-		const phrase = interaction.options.getString('frase');
+		const phrase = capitalize(interaction.options.getString('frase'));
 
 		const found = await phrasesColl.findOne({ letter: letter });
 		let operation;
