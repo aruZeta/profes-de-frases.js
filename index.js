@@ -2,7 +2,7 @@ const { Client, Collection, Intents } = require('discord.js');
 const { config: setupEnvVars } = require('dotenv');
 
 const { inviteLink } = require('./common/invite');
-const { readCommands, importToDiscord } = require('./common/read');
+const { readCommands } = require('./common/read');
 const { setupDB } = require('./common/mongo');
 
 setupEnvVars();
