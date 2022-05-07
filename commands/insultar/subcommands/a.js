@@ -70,7 +70,12 @@ module.exports = {
 					value: level
 				},
 				{ name: 'Insulto:',
-					value: randomInsult.replace(/<P>/, pingear ? person : person.username)
+					value: randomInsult.replace(
+						/<P>/,
+						pingear
+							? person
+							: interaction.guild.members.cache.get(person.id).displayName
+					)
 				}
 			);
 
