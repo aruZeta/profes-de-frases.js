@@ -59,5 +59,17 @@ module.exports = {
 			});
 			throw 'Check failed';
 		}
+	},
+
+	async checkInsult(interaction, insult) {
+		if (!insult.match(/.*<P>.*/)) {
+			await interaction.reply({
+				content: ''
+					+ 'El insulto debe llevar el texto \`<P>\` que se cambiara'
+					+ 'por el nombre de la persona a la que se insulta.',
+				ephemeral: true
+			});
+			throw 'Check failed';
+		}
 	}
 }
