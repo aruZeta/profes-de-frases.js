@@ -71,5 +71,15 @@ module.exports = {
 			});
 			throw 'Check failed';
 		}
-	}
+	},
+
+	async checkLevelFound(interaction, found, level) {
+		if (!found) {
+			await interaction.reply({
+				content: `No existen insultos con \`${level}\` en la DB.`,
+				ephemeral: true
+			});
+			throw 'Check failed';
+		}
+	},
 }
