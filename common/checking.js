@@ -82,4 +82,14 @@ module.exports = {
 			throw 'Check failed';
 		}
 	},
+
+	async checkIdInFoundInsults(interaction, id, found) {
+		if (id >= found.insults.length) {
+			await interaction.reply({
+				content: `No hay ninguna insulto con el id \`${id}\`.`,
+				ephemeral: true
+			});
+			throw 'Check failed';
+		}
+	},
 }
