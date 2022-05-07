@@ -20,7 +20,7 @@ module.exports = {
 	},
 
 	async execute({ interaction, phrasesColl }) {
-		const letraRandom = () => {
+		const randomLetter = () => {
 			return letters.charAt(Math.floor(Math.random() * letters.length))
 		};
 
@@ -33,7 +33,7 @@ module.exports = {
 
 		if (letter == null) {
 			while (!found) {
-				letter = letraRandom();
+				letter = randomLetter();
 				found = await find(letter);
 			}
 		} else {
