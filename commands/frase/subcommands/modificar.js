@@ -7,7 +7,7 @@ const {
 	, checkLetter
 } = require('../../../common/checking');
 const { embed } = require('../../../common/embed');
-const { capitalize } = require('../../../common/string.js');
+const { capitalize } = require('../../../common/string');
 
 const subcommandName = 'modificar';
 

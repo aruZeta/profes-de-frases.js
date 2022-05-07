@@ -7,7 +7,7 @@ const slashCommand =
 		.setName('frase')
 		.setDescription('Comandos de frases');
 
-subcommands = readSubcommands(slashCommand, __dirname);
+const subcommands = readSubcommands(slashCommand, __dirname);
 
 module.exports = {
 	slashCommand: slashCommand,
