@@ -1,4 +1,4 @@
-const { checkLetter, checkFound } = require('../../../common/checking');
+const { checkLetter, checkLetterFound } = require('../../../common/checking');
 const { embed } = require('../../../common/embed');
 const { letters } = require('../../../config.json');
 
@@ -41,7 +41,7 @@ module.exports = {
 			await checkLetter(interaction, letter);
 
 			found = await find(letter);
-			await checkFound(interaction, found, letter);
+			await checkLetterFound(interaction, found, letter);
 		}
 
 		const frases = found.phrases;

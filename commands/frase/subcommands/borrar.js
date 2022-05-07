@@ -1,9 +1,9 @@
 const {
 	checkAdmin
 	,	checkDbOperation
-	, checkFound
+	, checkLetterFound
 	, checkId
-	,	checkIdInFound
+	,	checkIdInFoundPhrases
 	, checkLetter
 } = require('../../../common/checking');
 const { embed } = require('../../../common/embed');
@@ -40,8 +40,8 @@ module.exports = {
 		await checkId(interaction, id);
 
 		const found = await phrasesColl.findOne({ letter: letter });
-		await checkFound(interaction, found, letter);
-		await checkIdInFound(interaction, id, found);
+		await checkLetterFound(interaction, found, letter);
+		await checkIdInFoundPhrases(interaction, id, found);
 
 		const phrase = found.phrases[id];
 

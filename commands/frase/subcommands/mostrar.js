@@ -1,7 +1,7 @@
 const {
-	checkFound
+	checkLetterFound
 	, checkId
-	, checkIdInFound
+	, checkIdInFoundPhrases
 	, checkLetter
 } = require('../../../common/checking');
 const { embed } = require('../../../common/embed');
@@ -35,7 +35,7 @@ module.exports = {
 		const id = interaction.options.getInteger('id');
 
 		const found = await phrasesColl.findOne({ letter: letter });
-		await checkFound(interaction, found, letter);
+		await checkLetterFound(interaction, found, letter);
 
 		if (id == null) {
 			let phrases = "";
@@ -62,7 +62,7 @@ module.exports = {
 			});
 		} else {
 			await checkId(interaction, id);
-			await checkIdInFound(interaction, id, found);
+			await checkIdInFoundPhrases(interaction, id, found);
 
 			const msgEmbed = embed()
 				.setTitle('Mostrar frase')

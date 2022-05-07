@@ -4,17 +4,17 @@ module.exports = {
 	async checkLetter(interaction, letter) {
 		if (letter.length != 1 || !letters.includes(letter)) {
 			await interaction.reply({
-				content: `\`${letter}\` no es una letra!`,
+				content: `\`${letter}\` no es una letra del abecedario!`,
 				ephemeral: true
 			});
 			throw 'Check failed';
 		}
 	},
 
-	async checkFound(interaction, found, letter) {
+	async checkLetterFound(interaction, found, letter) {
 		if (!found) {
 			await interaction.reply({
-				content: `\`${letter}\` no se encontro en la DB.`,
+				content: `No existen frases con \`${letter}\` en la DB.`,
 				ephemeral: true
 			});
 			throw 'Check failed';
@@ -41,7 +41,7 @@ module.exports = {
 		}
 	},
 
-	async checkIdInFound(interaction, id, found) {
+	async checkIdInFoundPhrases(interaction, id, found) {
 		if (id >= found.phrases.length) {
 			await interaction.reply({
 				content: `No hay ninguna frase con el id \`${id}\`.`,
