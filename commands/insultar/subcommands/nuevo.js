@@ -33,8 +33,6 @@ module.exports = {
 	},
 
 	async execute({ interaction, insultsColl }) {
-		await checkAdmin(interaction);
-
 		const level = interaction.options.getString('nivel');
 
 		const insult = capitalize(interaction.options.getString('insulto'));
