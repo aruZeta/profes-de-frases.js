@@ -14,7 +14,7 @@ module.exports = {
 	addSubcommand(slashCommand) {slashCommand
 		.addSubcommand(subcommand => subcommand
 			.setName(subcommandName)
-			.setDescription('Añade una nueva frase a la DB (solo admmins).')
+			.setDescription('Añade una nueva frase a la DB (solo admins).')
 			.addStringOption(option =>
 				option
 					.setName('letra')

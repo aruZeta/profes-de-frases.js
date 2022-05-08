@@ -12,7 +12,7 @@ module.exports = {
 	addSubcommand(slashCommand) {slashCommand
 		.addSubcommand(subcommand => subcommand
 			.setName(subcommandName)
-			.setDescription('Añade un nuevo insulto a la DB (solo admmins).')
+			.setDescription('Insultar a alguien.')
 			.addUserOption(option =>
 				option
 					.setName('persona')

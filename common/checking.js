@@ -66,7 +66,10 @@ module.exports = {
 			await interaction.reply({
 				content: ''
 					+ 'El insulto debe llevar el texto \`<P>\` que se cambiara'
-					+ 'por el nombre de la persona a la que se insulta.',
+					+ 'por el nombre de la persona a la que se insulta.'
+					+ '\n'
+					+'Ej: \`Eres tonto <P>\` al insultar quedaria como'
+					+ '\`Eres tonto Juan\` si insultas a Juan.',
 				ephemeral: true
 			});
 			throw 'Check failed';
@@ -76,7 +79,7 @@ module.exports = {
 	async checkLevelFound(interaction, found, level) {
 		if (!found) {
 			await interaction.reply({
-				content: `No existen insultos con \`${level}\` en la DB.`,
+				content: `No existen insultos de nivel \`${level}\` en la DB.`,
 				ephemeral: true
 			});
 			throw 'Check failed';

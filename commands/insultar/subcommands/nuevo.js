@@ -15,7 +15,7 @@ module.exports = {
 	addSubcommand(slashCommand) {slashCommand
 		.addSubcommand(subcommand => subcommand
 			.setName(subcommandName)
-			.setDescription('Añade un nuevo insulto a la DB (solo admmins).')
+			.setDescription('Añade un nuevo insulto a la DB.')
 			.addStringOption(option =>
 				option
 					.setName('nivel')
