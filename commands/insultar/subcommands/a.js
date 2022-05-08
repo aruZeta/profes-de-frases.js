@@ -1,5 +1,6 @@
 const {
 	checkLevelFound
+	, commonCheck
 } = require('../../../common/checking');
 const { embed } = require('../../../common/embed');
 const { levels } = require('../../../common/levels');
@@ -32,6 +33,11 @@ module.exports = {
 					.setRequired(false)
 					.addChoices(...levels)
 			)
+			.addIntegerOption(option => option
+				.setName('id')
+				.setDescription('Id del insulto')
+				.setRequired(false)
+			)
 		)
 	},
 
@@ -47,21 +53,36 @@ module.exports = {
 		const person = interaction.options.getUser('persona');
 		const pingear = interaction.options.getBoolean('pingear');
 		let level = interaction.options.getString('nivel');
+		const id = interaction.options.getInteger('id');
 
 		let found = false;
+		let insult;
 
-		if (level == null) {
-			while (!found) {
-				level = randomLevel();
+		if (id == null) {
+			if (level == null) {
+				while (!found) {
+					level = randomLevel();
+					found = await find(level);
+				}
+			} else {
 				found = await find(level);
+				await checkLevelFound(interaction, found, level);
 			}
-		} else {
-			found = await find(level);
-			await checkLevelFound(interaction, found, level);
-		}
 
-		const insults = found.insults;
-		const randomInsult = insults[Math.floor(Math.random() * insults.length)];
+			const insults = found.insults;
+			insult = insults[Math.floor(Math.random() * insults.length)];
+		} else {
+			if (level == null) {
+				await commonCheck(
+					interaction,
+					'Debes espicificar un nivel si pasas un id.'
+				);
+			} else {
+				found = await find(level);
+				await checkLevelFound(interaction, found, level);
+				insult = found.insults[id];
+			}
+		}
 
 		const msgEmbed = embed()
 			.setTitle('Insulto')
@@ -70,7 +91,7 @@ module.exports = {
 					value: level
 				},
 				{ name: 'Insulto:',
-					value: randomInsult.replace(
+					value: insult.replace(
 						/<P>/,
 						pingear
 							? person

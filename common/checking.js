@@ -75,6 +75,15 @@ module.exports = {
 			throw 'Check failed';
 		}
 	},
+	async checkLevel(interaction, level) {
+		if (!level) {
+			await interaction.reply({
+				content: `Debes espicificar un nivel.`,
+				ephemeral: true
+			});
+			throw 'Check failed';
+		}
+	},
 
 	async checkLevelFound(interaction, found, level) {
 		if (!found) {
@@ -95,4 +104,12 @@ module.exports = {
 			throw 'Check failed';
 		}
 	},
+
+	async commonCheck(interaction, text) {
+		await interaction.reply({
+			content: text,
+			ephemeral: true
+		});
+		throw 'Check failed';
+	}
 }
