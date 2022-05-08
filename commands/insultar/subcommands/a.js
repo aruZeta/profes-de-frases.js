@@ -1,6 +1,8 @@
 const {
 	checkLevelFound
 	, commonCheck
+	, checkId
+	, checkIdInFoundInsults
 } = require('../../../common/checking');
 const { embed } = require('../../../common/embed');
 const { levels } = require('../../../common/levels');
@@ -77,11 +79,13 @@ module.exports = {
 					interaction,
 					'Debes espicificar un nivel si pasas un id.'
 				);
-			} else {
-				found = await find(level);
-				await checkLevelFound(interaction, found, level);
-				insult = found.insults[id];
 			}
+
+			await checkId(interaction, id);
+			found = await find(level);
+			await checkLevelFound(interaction, found, level);
+			await checkIdInFoundInsults(interaction, id, found);
+			insult = found.insults[id];
 		}
 
 		const msgEmbed = embed()
