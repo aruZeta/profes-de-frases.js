@@ -58,7 +58,8 @@ module.exports = {
 				);
 
 			await interaction.reply({
-				embeds: [msgEmbed]
+				embeds: [msgEmbed],
+				ephemeral: true
 			});
 		} else {
 			await checkId(interaction, id);
