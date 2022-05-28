@@ -9,14 +9,14 @@ setupEnvVars();
 
 const commands = [];
 const addToCommands = command =>
-	commands.push(command.slashCommand.toJSON());
+      commands.push(command.slashCommand.toJSON());
 readCommands(__dirname, addToCommands);
 
 const rest = new REST({ version: '9' }).setToken(process.env.token);
 
 rest.put(
-	Routes.applicationGuildCommands(clientId, guildId),
-	{ body: commands }
+    Routes.applicationGuildCommands(clientId, guildId),
+    { body: commands }
 ).then(() =>
-	console.log('Successfully registered application commands.')
+    console.log('Successfully registered application commands.')
 ).catch(console.error);
