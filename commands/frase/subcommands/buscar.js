@@ -18,15 +18,15 @@ module.exports = {
                 .setDescription('Muestra las frases con la palabra pasada.')
                 .addStringOption(
                     option => option
-                        .setName('letra')
-                        .setDescription('Letra de las frases')
+                        .setName('palabra')
+                        .setDescription('La palabra a buscar')
                         .setRequired(true)
                 )
                 .addStringOption(
                     option => option
-                        .setName('palabra')
-                        .setDescription('La palabra a buscar')
-                        .setRequired(true)
+                        .setName('letra')
+                        .setDescription('Letra de las frases')
+                        .setRequired(false)
                 )
         )
     },
@@ -57,6 +57,43 @@ module.exports = {
 
             msgEmbed = embed()
                 .setTitle(`Frases con \`${letter}\` y que contienen \`${word}\``)
+                .addFields(
+                    { name: 'Numero de frases:',
+                      value: `${quantity}`,
+                      inline: true
+                    },
+                    { name: 'Frases:',
+                      value: phrases,
+                    }
+                );
+        } else {
+            const found = await phrasesColl.aggregate([
+                { $unwind: {
+                    path: '$phrases',
+                    includeArrayIndex: 'id'
+                }},
+                { $match: {
+                    phrases: { $regex: word }
+                }}
+            ]);
+
+            let quantity = 0;
+            let phrases = '';
+            let lastLetter = '';
+
+            await found.forEach(phrase => {
+                if (phrase.letter != lastLetter) {
+                    phrases += `\nCon la letra \`${phrase.letter}\`:\n`;
+                    lastLetter = phrase.letter;
+                }
+
+                phrases += `${phrase.id}: ${phrase.phrases}\n`;
+
+                quantity++;
+            });
+
+            msgEmbed = embed()
+                .setTitle(`Frases que contienen \`${word}\``)
                 .addFields(
                     { name: 'Numero de frases:',
                       value: `${quantity}`,
