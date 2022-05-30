@@ -35,17 +35,18 @@ module.exports = {
         let letter = interaction.options.getString('letra');
         const word = interaction.options.getString('palabra');
 
-        let msgEmbed;
+        let title;
+        let quantity = 0;
+        let phrases = '';
 
         if (letter != null) {
             letter = letter.toLowerCase();
             await checkLetter(interaction, letter);
 
+            title = `Frases con \`${letter}\` y que contienen \`${word}\``;
+
             const found = await phrasesColl.findOne({ letter: letter });
             await checkLetterFound(interaction, found, letter);
-
-            let phrases = "";
-            let quantity = 0;
 
             for (let i = 0; i < found.phrases.length; i++) {
                 const phrase = found.phrases[i];
@@ -54,19 +55,9 @@ module.exports = {
                     quantity++;
                 }
             }
-
-            msgEmbed = embed()
-                .setTitle(`Frases con \`${letter}\` y que contienen \`${word}\``)
-                .addFields(
-                    { name: 'Numero de frases:',
-                      value: `${quantity}`,
-                      inline: true
-                    },
-                    { name: 'Frases:',
-                      value: phrases,
-                    }
-                );
         } else {
+            title = `Frases que contienen \`${word}\``;
+
             const found = await phrasesColl.aggregate([
                 { $unwind: {
                     path: '$phrases',
@@ -77,8 +68,6 @@ module.exports = {
                 }}
             ]);
 
-            let quantity = 0;
-            let phrases = '';
             let lastLetter = '';
 
             await found.forEach(phrase => {
@@ -88,22 +77,23 @@ module.exports = {
                 }
 
                 phrases += `${phrase.id}: ${phrase.phrases}\n`;
-
                 quantity++;
             });
-
-            msgEmbed = embed()
-                .setTitle(`Frases que contienen \`${word}\``)
-                .addFields(
-                    { name: 'Numero de frases:',
-                      value: `${quantity}`,
-                      inline: true
-                    },
-                    { name: 'Frases:',
-                      value: phrases,
-                    }
-                );
         }
+
+        const msgEmbed = embed()
+              .setTitle(title)
+              .addFields(
+                  { name: 'Numero de frases:',
+                    value: `${quantity}`,
+                    inline: true
+                  },
+                  { name: 'Frases:',
+                    value: phrases.length > 0
+                    ? phrases
+                    : 'No hay frases con esa palabra'
+                  }
+              );
 
         await interaction.reply({
             embeds: [msgEmbed],
