@@ -19,6 +19,10 @@ class Pager {
     }
 
     get actualPage() {
+        if (this.size == 0) {
+            return -1;
+        }
+
         return this.#actualPage;
     }
 

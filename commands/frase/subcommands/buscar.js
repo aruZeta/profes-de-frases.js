@@ -93,41 +93,52 @@ module.exports = {
             });
         }
 
-        if (pager.size > 1) {
-            const msgEmbed = () => {
-                return embed()
-                    .setTitle(title)
-                    .addFields(
-                        { name: 'Numero de frases:',
-                          value: `${quantity}`,
-                          inline: true
-                        },
-                        { name: 'Pagina:',
-                          value: `${pager.actualPage + 1}/${pager.size}`,
-                          inline: true
-                        },
-                        { name: 'Frases:',
-                          value: pager.size > 0
-                          ? pager.actualPageText
-                          : 'No hay frases con esa palabra'
-                        }
-                    );
-            }
+        const msgEmbed = () => {
+            return embed()
+                .setTitle(title)
+                .addFields(
+                    { name: 'Numero de frases:',
+                      value: `${quantity}`,
+                      inline: true
+                    },
+                    { name: 'Pagina:',
+                      value: `${pager.actualPage + 1}/${pager.size}`,
+                      inline: true
+                    },
+                    { name: 'Frases:',
+                      value: pager.size > 0
+                      ? pager.actualPageText
+                      : 'No hay frases con esa palabra'
+                    }
+                );
+        };
 
+        const buttons = () => {
+            return new MessageActionRow({
+                components: [
+                    ...(pager.isFirstPage() ? [] : [backButton]),
+                    ...(pager.isLastPage() ? [] : [forwardButton])
+                ]
+            });
+        }
+
+        const reply = () => {
+            return {
+                embeds: [ msgEmbed() ],
+                components: ( pager.size > 1
+                              ? [ buttons() ]
+                              : null
+                            ),
+                ephemeral: false
+            }
+        }
+
+        if (pager.size == 0) {
+            await interaction.reply(reply());
+        } else {
             await interaction.reply('Resultado:');
             
-            const embedReply =
-                  await interaction.channel.send({
-                      embeds: [msgEmbed()],
-                      components: [
-                          new MessageActionRow(
-                              { components: [
-                                  forwardButton
-                              ]}
-                          )
-                      ],
-                      ephemeral: false
-                  });
+            const embedReply = await interaction.channel.send(reply());
             
             const collector = embedReply.createMessageComponentCollector({
                 componentType: 'BUTTON'
@@ -138,37 +149,7 @@ module.exports = {
                     ? (pager.previousPage())
                     : (pager.nextPage());
 
-                await interaction.update({
-                    embeds: [msgEmbed()],
-                    components: [
-                        new MessageActionRow(
-                            { components: [
-                                ...(pager.isFirstPage() ? [] : [backButton]),
-                                ...(pager.isLastPage() ? [] : [forwardButton])
-                            ]}
-                        )
-                    ],
-                    ephemeral: false
-                });
-            });
-        } else {
-            await interaction.reply({
-                embeds: [
-                    embed()
-                        .setTitle(title)
-                        .addFields(
-                            { name: 'Numero de frases:',
-                              value: `${quantity}`,
-                              inline: true
-                            },
-                            { name: 'Frases:',
-                              value: pager.size > 0
-                              ? pager.actualPageText
-                              : 'No hay frases con esa palabra'
-                            }
-                        )
-                ],
-                ephemeral: false
+                await interaction.update(reply());
             });
         }
     }
