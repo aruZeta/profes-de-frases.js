@@ -57,16 +57,27 @@ module.exports = {
 
             title = `Frases con \`${letter}\` y que contienen \`${word}\``;
 
-            const found = await phrasesColl.findOne({ letter: letter });
-            await checkLetterFound(interaction, found, letter);
+            await checkLetterFound(
+                interaction,
+                await phrasesColl.findOne({ letter: letter }),
+                letter
+            );
 
-            for (let i = 0; i < found.phrases.length; i++) {
-                const phrase = found.phrases[i];
-                if (new RegExp(word, "i").test(phrase)) {
-                    pager.add(`${i}: ${phrase}\n`);
-                    quantity++;
-                }
-            }
+            const found = await phrasesColl.aggregate([
+                { $match: { letter: letter } },
+                { $unwind: {
+                    path: '$phrases',
+                    includeArrayIndex: 'id'
+                }},
+                { $match: {
+                    phrases: { $regex: word, $options: 'i' }
+                }}
+            ]);
+
+            await found.forEach(phrase => {
+                pager.add(`${phrase.id}: ${phrase.phrases}\n`);
+                quantity++;
+            });
         } else {
             title = `Frases que contienen \`${word}\``;
 
@@ -76,7 +87,7 @@ module.exports = {
                     includeArrayIndex: 'id'
                 }},
                 { $match: {
-                    phrases: { $regex: word }
+                    phrases: { $regex: word, $options: 'i' }
                 }}
             ]);
 
