@@ -15,6 +15,8 @@ const {
     , forwardButton
 } = require('../../../common/embed');
 
+const { Pager } = require('../../../common/pager');
+
 const subcommandName = 'buscar';
 
 module.exports = {
@@ -46,21 +48,8 @@ module.exports = {
 
         let title;
         let quantity = 0;
-        let phrases = [];
-        let actualPage = 0;
-        let actualLength = 0;
 
-        const pagePhrase = text => {
-            actualLength += text.length;
-
-            if (actualLength >= 1024) {
-                phrases.push('');
-                actualLength = text.length;
-                actualPage++;
-            }
-
-            return text;
-        }
+        const pager = new Pager();
 
         if (letter != null) {
             letter = letter.toLowerCase();
@@ -74,8 +63,7 @@ module.exports = {
             for (let i = 0; i < found.phrases.length; i++) {
                 const phrase = found.phrases[i];
                 if (new RegExp(word, "i").test(phrase)) {
-                    let text = pagePhrase(`${i}: ${phrase}\n`);
-                    phrases[actualPage] += text;
+                    pager.add(`${i}: ${phrase}\n`);
                     quantity++;
                 }
             }
@@ -96,20 +84,16 @@ module.exports = {
 
             await found.forEach(phrase => {
                 if (phrase.letter != lastLetter) {
-                    let text = pagePhrase(`\nCon la letra \`${phrase.letter}\`:\n`);
-                    phrases[actualPage] += text;
+                    pager.add(`\nCon la letra \`${phrase.letter}\`:\n`);
                     lastLetter = phrase.letter;
                 }
 
-                text = pagePhrase(`${phrase.id}: ${phrase.phrases}\n`);
-                phrases[actualPage] += text;
+                pager.add(`${phrase.id}: ${phrase.phrases}\n`);
                 quantity++;
             });
         }
 
-        let embedPage = 0;
-
-        if (phrases.length > 1) {
+        if (pager.size > 1) {
             const msgEmbed = () => {
                 return embed()
                     .setTitle(title)
@@ -119,18 +103,18 @@ module.exports = {
                           inline: true
                         },
                         { name: 'Pagina:',
-                          value: `${embedPage + 1}/${phrases.length}`,
+                          value: `${pager.actualPage + 1}/${pager.size}`,
                           inline: true
                         },
                         { name: 'Frases:',
-                          value: phrases.length > 0
-                          ? phrases[embedPage]
+                          value: pager.size > 0
+                          ? pager.actualPageText
                           : 'No hay frases con esa palabra'
                         }
                     );
             }
 
-            await interaction.reply('Resultado:',);
+            await interaction.reply('Resultado:');
             
             const embedReply =
                   await interaction.channel.send({
@@ -150,14 +134,17 @@ module.exports = {
             });
             
             collector.on('collect', async interaction => {
-                interaction.customId === backId ? (embedPage--) : (embedPage++);
+                interaction.customId === backId
+                    ? (pager.previousPage())
+                    : (pager.nextPage());
+
                 await interaction.update({
                     embeds: [msgEmbed()],
                     components: [
                         new MessageActionRow(
                             { components: [
-                                ...(embedPage == 0 ? [] : [backButton]),
-                                ...(embedPage == phrases.length - 1 ? [] : [forwardButton])
+                                ...(pager.isFirstPage() ? [] : [backButton]),
+                                ...(pager.isLastPage() ? [] : [forwardButton])
                             ]}
                         )
                     ],
@@ -175,8 +162,8 @@ module.exports = {
                               inline: true
                             },
                             { name: 'Frases:',
-                              value: phrases.length > 0
-                              ? phrases[0]
+                              value: pager.size > 0
+                              ? pager.actualPageText
                               : 'No hay frases con esa palabra'
                             }
                         )
