@@ -1,4 +1,4 @@
-const { MessageButton, MessageActionRow } = require('discord.js');
+const { MessageActionRow } = require('discord.js');
 
 const {
     checkLetterFound
@@ -6,7 +6,14 @@ const {
     , checkIdInFoundPhrases
     , checkLetter
 } = require('../../../common/checking');
-const { embed } = require('../../../common/embed');
+
+const {
+    embed
+    , backId
+    , backButton
+    , forwardId
+    , forwardButton
+} = require('../../../common/embed');
 
 const subcommandName = 'buscar';
 
@@ -101,23 +108,6 @@ module.exports = {
         }
 
         let embedPage = 0;
-
-        const backId = 'back';
-        const forwardId = 'forward';
-
-        const backButton = new MessageButton({
-            style: 'SECONDARY',
-            label: 'Anterior',
-            emoji: '⬅️',
-            customId: backId
-        });
-
-        const forwardButton = new MessageButton({
-            style: 'SECONDARY',
-            label: 'Siguiente',
-            emoji: '➡️',
-            customId: forwardId
-        });
 
         if (phrases.length > 1) {
             const msgEmbed = () => {
