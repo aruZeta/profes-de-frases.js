@@ -1,10 +1,21 @@
+const { MessageActionRow } = require('discord.js');
+
 const {
     checkLetterFound
     , checkId
     , checkIdInFoundPhrases
     , checkLetter
 } = require('../../../common/checking');
-const { embed } = require('../../../common/embed');
+
+const {
+    embed
+    , backId
+    , backButton
+    , forwardId
+    , forwardButton
+} = require('../../../common/embed');
+
+const { Pager } = require('../../../common/pager');
 
 const subcommandName = 'mostrar';
 
@@ -41,28 +52,65 @@ module.exports = {
         await checkLetterFound(interaction, found, letter);
 
         if (id == null) {
-            let phrases = "";
+            const pager = new Pager();
             const quantity = found.phrases.length;
 
             for (let i = 0; i < quantity; i++) {
-                phrases += `${i}: ${found.phrases[i]}\n`;
+                pager.add(`${i}: ${found.phrases[i]}\n`);
             }
 
-            const msgEmbed = embed()
+            const msgEmbed = () => {
+                return embed()
                   .setTitle(`Frases con \`${letter}\``)
                   .addFields(
                       { name: 'Numero de frases:',
                         value: `${quantity}`,
                         inline: true
                       },
+                      { name: 'Pagina:',
+                        value: `${pager.actualPage + 1}/${pager.size}`,
+                        inline: true
+                      },
                       { name: 'Frases:',
-                        value: phrases,
+                        value: pager.actualPageText
                       }
                   );
+            }
 
-            await interaction.reply({
-                embeds: [msgEmbed],
-                ephemeral: true
+            const buttons = () => {
+                return new MessageActionRow({
+                    components: [
+                        ...(pager.isFirstPage() ? [] : [backButton]),
+                        ...(pager.isLastPage() ? [] : [forwardButton])
+                    ]
+                });
+            }
+
+            const reply = () => {
+                return {
+                    embeds: [ msgEmbed() ],
+                    components: ( pager.size > 1
+                                  ? [ buttons() ]
+                                  : null
+                                ),
+                    ephemeral: false
+                }
+            }
+
+            await interaction.reply('Resultado:');
+            
+            const embedReply = await interaction.channel.send(reply());
+            
+            const collector = embedReply.createMessageComponentCollector({
+                componentType: 'BUTTON'
+            });
+            
+            collector.on('collect', async interaction => {
+                interaction.customId === backId
+                    ? (pager.previousPage())
+                    : (pager.nextPage());
+
+                await interaction.update(reply());
             });
         } else {
             await checkId(interaction, id);
